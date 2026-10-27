@@ -1,1 +1,3 @@
 ultralytics
+cpu: pip3 install torch torchvision
+pip install ultralytics opencv-python
