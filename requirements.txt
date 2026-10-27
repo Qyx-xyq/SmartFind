@@ -1,3 +1,2 @@
-ultralytics
-cpu: pip3 install torch torchvision
+torch 按GPU类型（cpu: pip3 install torch torchvision）
 pip install ultralytics opencv-python

@@ -44,8 +44,8 @@ def find_object_in_image(image_path, text_query, yolo_model, clip_model, preproc
                 crop_pil = Image.fromarray(crop_rgb)
                 crops_pil.append(crop_pil)
                 
-                # (可选) 如果想保存下来看效果，取消下面两行的注释
-                crop_pil.save(f"debug_crop_{i}.jpg")
+                # (可选) 如果想保存下来看效果，取消下面一行的注释
+                # crop_pil.save(f"demo_pipeline/data/debug_crop_{i}.jpg")
     
     print(f"YOLO 抠出了 {len(crops_pil)} 个候选子图。")
     
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     yolo, clip_m, prep, dev = init_models()
     
     # 测试图片（这里用官方测试图，里面有一辆公交车和几个人）
-    test_image = "bus.jpg"
+    test_image = "demo_pipeline/data/bus.jpg"
     
     # 测试查询 1：找“人”
     status, score = find_object_in_image(test_image, "a photo of a person", yolo, clip_m, prep, dev)
