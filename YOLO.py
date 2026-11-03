@@ -76,14 +76,14 @@ if __name__ == "__main__":
     detector = YOLODetector(model_path="models/yolov8n.pt", conf_threshold=0.1)
     
     # 测试图片
-    test_img = "data/bus.jpg"
+    test_img = "data/3.jpg"
     
     # 获取裁剪结果
     cropped_images = detector.detect_and_crop(test_img)
     
-    # 把切出来的第一张图保存到本地看看效果
+    # 把切出来的图保存到本地看看效果
     if cropped_images:
-        cropped_images[0].save("YOLOtest/test_crop_result1.jpg")
-        print("已保存第一张切片为 test_crop_result1.jpg")
-        cropped_images[1].save("YOLOtest/test_crop_result2.jpg")
-        print("已保存第二张切片为 test_crop_result2.jpg")
+        i=1
+        for cropped_image in cropped_images:
+            cropped_image.save(f"YOLOtest/cropped_3-{i}.jpg")
+            i+=1
