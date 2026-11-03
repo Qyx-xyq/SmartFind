@@ -73,7 +73,7 @@ class YOLODetector:
 # ================= 本地测试 =================
 if __name__ == "__main__":
     # 实例化检测器（调整 conf_threshold 可以控制框的多少）
-    detector = YOLODetector(model_path="yolov8n.pt", conf_threshold=0.1)
+    detector = YOLODetector(model_path="models/yolov8n.pt", conf_threshold=0.1)
     
     # 测试图片
     test_img = "data/bus.jpg"
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     
     # 把切出来的第一张图保存到本地看看效果
     if cropped_images:
-        cropped_images[0].save("test_crop_result1.jpg")
+        cropped_images[0].save("YOLOtest/test_crop_result1.jpg")
         print("已保存第一张切片为 test_crop_result1.jpg")
-        cropped_images[1].save("test_crop_result2.jpg")
-        print("已保存第一张切片为 test_crop_result2.jpg")
+        cropped_images[1].save("YOLOtest/test_crop_result2.jpg")
+        print("已保存第二张切片为 test_crop_result2.jpg")
