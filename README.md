@@ -9,10 +9,10 @@
 ##### | |- data          输入/输出的示例图片
 ##### |
 ##### |- CLIP.py       CLIP模型
-##### |- YOLI.py       YOLO模型
+##### |- YOLO.py       YOLO模型
 ##### |- train.py      模型训练入口（待定）
 ##### |- main.py       主功能入口（待定）
-##### |- data          输入/输出数据
+##### |- data          数据文件夹
 ##### |
-##### |- weights       模型权重存储
-##### | |- yolov8n.pt    yolov8官方预训练模型权重
+##### |- moedels         模型存储
+##### | |- yolov8n.pt    yolov8官方预训练模型
