@@ -11,7 +11,7 @@ def run_pipeline(image_path, text_query):
 
     # 1. 初始化模型（只会加载一次）
     print("--- 初始化模型 ---")
-    yolo = YOLODetector(model_path="yolov8n.pt", conf_threshold=0.1)
+    yolo = YOLODetector(model_path="models/yolov8n.pt", conf_threshold=0.1)
     clip_matcher = CLIPMatcher(threshold=0.25)
 
     # 2. YOLO 阶段：提取候选子图
@@ -59,7 +59,7 @@ def run_pipeline(image_path, text_query):
 if __name__ == "__main__":
     # 找一张真实的图片测试（确保 data 文件夹下有这张图）
     # 如果没有，你可以先去网上下载一张带背包的图，命名为 test.jpg 放进 data 文件夹
-    test_img = "data/test.jpg" 
+    test_img = "data/2.jpg" 
     test_query = "a black backpack"
     
     # 运行流水线
