@@ -1,3 +1,10 @@
+# ==========================================
+# 解决 Mac 系统下 OpenMP 库冲突导致的崩溃
+# 必须放在所有 import 的最前面！
+# ==========================================
+import os
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+
 """
 CLIP 图文语义匹配模块 (M5)
 负责人：黄涵
@@ -133,7 +140,7 @@ if __name__ == "__main__":
     mock_yolo_crops = [img_blue, img_red]
 
     # 实例化匹配器（此时会打印“正在加载 CLIP 模型...”）
-    matcher = CLIPMatcher(threshold=0.25)
+    matcher = CLIPMatcher(threshold=0.20)
 
     print("\n--- 第一次查询：找蓝色图 ---")
     result = matcher.match_images("a blue picture", mock_yolo_crops, top_k=2)
