@@ -239,7 +239,7 @@ def _logo_b64(path: str = LOGO_PATH, max_w: int = 560):
     if not os.path.exists(path):
         return None
     try:
-        im = Image.open(path).convert("RGB")
+        im = Image.open(path).convert("RGB")    
         bg = Image.new("RGB", im.size, (255, 255, 255))
         diff = ImageChops.difference(im, bg).convert("L").point(lambda v: 255 if v > 14 else 0)
         bbox = diff.getbbox()
