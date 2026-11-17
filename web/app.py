@@ -29,11 +29,14 @@ from PIL import Image, ImageChops
 # ============================================================================
 # ★★★ 唯一需要修改的开关区 ★★★
 # ============================================================================
-MOCK_MODE = True  # True = 演示模式(假数据)；YOLO/CLIP 就绪后改为 False
+MOCK_MODE = False  # True = 演示模式(假数据)；YOLO/CLIP 就绪后改为 False
 
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # 让 Python 找到上一级目录
+      
 # 联调时取消下面两行注释即可（接口与两位同学的现有代码完全一致）：
-# from YOLO import YOLODetector      # 秦宇霄：YOLODetector(model_path, conf_threshold).detect_and_crop(path) -> [PIL子图]
-# from CLIP import CLIPMatcher       # 黄涵：CLIPMatcher(threshold).match_images(文本, [PIL子图], top_k) -> dict
+from YOLO import YOLODetector      # 秦宇霄：YOLODetector(model_path, conf_threshold).detect_and_crop(path) -> [PIL子图]
+from CLIP import CLIPMatcher       # 黄涵：CLIPMatcher(threshold).match_images(文本, [PIL子图], top_k) -> dict
 
 IMAGE_DIR = os.path.join("web", "test_images")   # 图库文件夹
 LOGO_PATH = os.path.join("web", "logo.png")      # LOGO 文件
