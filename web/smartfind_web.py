@@ -147,7 +147,7 @@ def mock_search(query: str, k: int):
         seed = int.from_bytes((query + os.path.basename(path)).encode("utf-8")[:8], "little")
         score = round(random.Random(seed).uniform(0.30, 0.95), 4)
         results.append({"score": score, "source": os.path.basename(path),
-                        "crop": None, "crop_b64": ""})
+                        "crop_b64": ""})
     results.sort(key=lambda r: r["score"], reverse=True)
     return results[:k]
 
@@ -169,8 +169,7 @@ def real_search(query: str, k: int):
                 results.append({
                     "score": round(float(score), 4),
                     "source": os.path.basename(path),
-                    "crop": crop,
-                    "crop_b64": pil_to_b64(crop),
+                    "crop_b64": pil_to_b64(crop),   # 只回传 base64，避免 PIL 对象无法 JSON 序列化
                 })
         except Exception as e:
             print(f"[搜索] 跳过 {path}: {e}")
