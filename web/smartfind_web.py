@@ -54,25 +54,111 @@ THRESHOLD         = 0.25                   # 相似度判定阈值（与 CLIP.py
 # 用户输入包含这些词时，自动把英文提示追加给 CLIP，提高匹配精度。
 # 将来若换成中文 CLIP 模型（如 Chinese-CLIP），删掉这个字典即可。
 ZH2EN = {
-    "背包": "backpack", "书包": "backpack", "双肩包": "backpack",
-    "保温杯": "thermos cup", "水杯": "cup", "杯子": "cup", "瓶": "bottle",
-    "伞": "umbrella", "雨伞": "umbrella",
-    "手机": "mobile phone", "耳机": "earphone", "充电宝": "power bank",
-    "钥匙": "keys", "钱包": "wallet", "卡包": "card wallet",
-    "笔袋": "pencil case", "笔": "pen", "文具盒": "pencil case",
-    "帽子": "hat", "手套": "gloves", "围巾": "scarf",
-    "眼镜": "glasses", "水壶": "water bottle",
-    "猫": "cat", "狗": "dog", "人": "person",
-    "公交车": "bus", "汽车": "car", "自行车": "bicycle",
+    # ---------- 箱包 ----------
+    "背包": "backpack", "书包": "backpack", "双肩包": "backpack", "挎包": "shoulder bag",
+    "单肩包": "shoulder bag", "手提包": "handbag", "手拎包": "handbag", "公文包": "briefcase",
+    "腰包": "waist bag", "收纳包": "pouch", "化妆包": "makeup bag", "旅行包": "travel bag",
+    "行李箱": "suitcase", "拉杆箱": "suitcase", "旅行箱": "suitcase", "箱子": "box",
+    "钱包": "wallet", "钱夹": "wallet", "卡包": "card holder", "笔袋": "pencil case",
+    "文具盒": "pencil case", "购物袋": "shopping bag", "纸袋": "paper bag", "布袋": "cloth bag",
+    # ---------- 电子数码 ----------
+    "手机": "mobile phone", "电话": "phone", "苹果手机": "iphone", "华为手机": "huawei phone",
+    "平板": "tablet", "笔记本电脑": "laptop", "笔记本": "notebook", "电脑": "computer",
+    "耳机": "earphones", "蓝牙耳机": "bluetooth earphones", "有线耳机": "wired earphones",
+    "充电宝": "power bank", "充电器": "charger", "数据线": "cable", "充电线": "charging cable",
+    "鼠标": "mouse", "键盘": "keyboard", "U盘": "usb drive", "优盘": "usb drive",
+    "移动硬盘": "external hard drive", "硬盘": "hard drive", "相机": "camera",
+    "单反": "dslr camera", "摄像机": "video camera", "手表": "watch", "智能手表": "smart watch",
+    "手环": "fitness band", "游戏机": "game console", "对讲机": "walkie talkie",
+    "录音笔": "voice recorder", "计算器": "calculator", "手机壳": "phone case",
+    "保护壳": "protective case", "钢化膜": "screen protector", "自拍杆": "selfie stick",
+    "三脚架": "tripod", "麦克风": "microphone", "音箱": "speaker", "音响": "speaker",
+    "投影仪": "projector", "路由器": "router", "电池": "battery", "灯泡": "light bulb",
+    "手电筒": "flashlight", "手电": "flashlight", "台灯": "desk lamp", "风扇": "fan",
+    "吹风机": "hair dryer", "电动牙刷": "electric toothbrush", "剃须刀": "razor", "充电头": "charger",
+    # ---------- 服饰穿戴 ----------
+    "帽子": "hat", "鸭舌帽": "cap", "棒球帽": "baseball cap", "毛线帽": "beanie",
+    "围巾": "scarf", "手套": "gloves", "口罩": "face mask", "眼镜": "glasses",
+    "墨镜": "sunglasses", "太阳镜": "sunglasses", "隐形眼镜": "contact lenses",
+    "衣服": "clothes", "外套": "jacket", "夹克": "jacket", "卫衣": "hoodie",
+    "毛衣": "sweater", "衬衫": "shirt", "裤子": "pants", "裙子": "skirt",
+    "鞋子": "shoes", "运动鞋": "sneakers", "帆布鞋": "canvas shoes", "拖鞋": "slippers",
+    "袜子": "socks", "领带": "tie", "皮带": "belt", "腰带": "belt",
+    "睡衣": "pajamas", "泳衣": "swimsuit", "雨衣": "raincoat", "校服": "school uniform",
+    # ---------- 文具书籍 ----------
+    "笔": "pen", "钢笔": "fountain pen", "圆珠笔": "ballpoint pen", "铅笔": "pencil",
+    "中性笔": "gel pen", "马克笔": "marker", "荧光笔": "highlighter", "毛笔": "brush pen",
+    "书": "book", "课本": "textbook", "字典": "dictionary", "词典": "dictionary",
+    "尺子": "ruler", "橡皮": "eraser", "胶带": "tape", "订书机": "stapler",
+    "剪刀": "scissors", "文件夹": "folder", "文件袋": "file bag", "画板": "drawing board",
+    "画笔": "paint brush", "颜料": "paint", "作业本": "notebook",
+    # ---------- 杯瓶容器 ----------
+    "水杯": "cup", "杯子": "cup", "保温杯": "thermos cup", "水壶": "water bottle",
+    "保温瓶": "thermos", "瓶子": "bottle", "瓶": "bottle", "矿泉水瓶": "water bottle",
+    "茶杯": "teacup", "马克杯": "mug", "饭盒": "lunch box", "便当盒": "lunch box",
+    # ---------- 钥匙证件卡 ----------
+    "钥匙": "keys", "钥匙扣": "keychain", "门禁卡": "access card", "公交卡": "bus card",
+    "地铁卡": "metro card", "饭卡": "meal card", "校园卡": "campus card",
+    "银行卡": "bank card", "身份证": "id card", "驾驶证": "driver license",
+    "会员卡": "membership card", "卡片": "card",
+    # ---------- 雨具户外 ----------
+    "伞": "umbrella", "雨伞": "umbrella", "遮阳伞": "parasol", "帐篷": "tent",
+    "睡袋": "sleeping bag", "登山杖": "hiking pole", "望远镜": "binoculars",
+    "指南针": "compass", "打火机": "lighter",
+    # ---------- 颜色 ----------
     "紫色": "purple", "白色": "white", "黑色": "black", "红色": "red",
     "蓝色": "blue", "绿色": "green", "黄色": "yellow", "粉色": "pink",
+    "灰色": "gray", "橙色": "orange", "棕色": "brown", "咖啡色": "brown",
+    "银色": "silver", "金色": "gold", "透明": "transparent", "藏青色": "navy blue",
+    # ---------- 材质图案 ----------
+    "皮革": "leather", "真皮": "leather", "帆布": "canvas", "尼龙": "nylon",
+    "塑料": "plastic", "金属": "metal", "木质": "wooden", "玻璃": "glass",
+    "条纹": "striped", "格子": "plaid", "卡通": "cartoon", "印花": "floral print",
+    # ---------- 人物动物 ----------
+    "人": "person", "男人": "man", "女人": "woman", "小孩": "child", "儿童": "child",
+    "老人": "elderly person", "学生": "student", "老师": "teacher", "警察": "police officer",
+    "保安": "security guard", "猫": "cat", "小猫": "cat", "狗": "dog", "小狗": "dog",
+    "兔子": "rabbit", "鸟": "bird", "鱼": "fish", "乌龟": "turtle", "仓鼠": "hamster",
+    # ---------- 交通工具 ----------
+    "公交车": "bus", "巴士": "bus", "汽车": "car", "轿车": "car", "出租车": "taxi",
+    "自行车": "bicycle", "电动车": "electric scooter", "摩托车": "motorcycle",
+    "地铁": "subway", "火车": "train", "高铁": "high-speed train", "飞机": "airplane",
+    "三轮车": "tricycle", "滑板车": "scooter", "平衡车": "hoverboard",
+    # ---------- 运动娱乐 / 其他 ----------
+    "篮球": "basketball", "足球": "soccer ball", "排球": "volleyball",
+    "羽毛球": "badminton racket", "乒乓球": "ping pong paddle", "网球": "tennis racket",
+    "玩具": "toy", "娃娃": "doll", "玩偶": "stuffed toy", "积木": "building blocks",
+    "拼图": "puzzle", "瑜伽垫": "yoga mat", "跳绳": "jump rope", "哑铃": "dumbbell",
+    "镜子": "mirror", "梳子": "comb", "指甲刀": "nail clipper", "药": "medicine",
+    "药瓶": "medicine bottle", "纸巾": "tissue", "快递": "package", "包裹": "package",
+    "行李": "luggage", "纸箱": "cardboard box", "盒子": "box", "袋子": "bag",
 }
 
 
 def build_query(text: str) -> str:
-    """把中文查询转成 CLIP 更容易理解的英文/中英混合查询。"""
-    hits = [en for zh, en in ZH2EN.items() if zh in text]
-    return f"{text} {'' if not hits else ', ' + ' '.join(hits)}".strip()
+    """把中文查询转成 CLIP 更容易理解的英文/中英混合查询。
+
+    离线词典加强版：
+    - 长词优先：按词条长度降序匹配，避免"双肩包"被"包"之类短词拆散
+    - 命中即消耗：匹配到的词从待匹配文本里移除，避免同一段文字被重复翻译
+    - 同义词归一：多个中文说法映射到同一个英文，自动去重
+    - 中英拼接：保留用户原文 + 追加英文提示，CLIP 中英文都能读到
+    全程离线，无网络请求，展示现场断网也能正常工作。
+    """
+    if not text or not str(text).strip():
+        return ""
+    raw = str(text).strip()
+    remaining = raw
+    english_hits = []
+    for zh in sorted(ZH2EN, key=len, reverse=True):
+        if zh in remaining:
+            en = ZH2EN[zh]
+            if en not in english_hits:
+                english_hits.append(en)
+            remaining = remaining.replace(zh, " ")
+    if not english_hits:
+        return raw
+    return f"{raw}, {' '.join(english_hits)}"
 
 
 # ============================================================================
