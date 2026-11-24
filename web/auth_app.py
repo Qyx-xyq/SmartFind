@@ -35,9 +35,27 @@ def show_auth_page():
         new_sid = st.text_input("学号", key="reg_sid")
         new_pw = st.text_input("密码", type="password", key="reg_pw")
         
+        # ================= 新增：内部邀请码输入框 =================
+        admin_code = st.text_input("管理员内部邀请码（普通用户请留空）", type="password", key="reg_admin_code")
+        # ========================================================
+        
         if st.button("提交注册", use_container_width=True):
-            success, msg = db.register(new_user, new_phone, new_sid, new_pw)
+            # 判断邀请码是否正确
+            role_to_assign = "admin" if admin_code == "smartfind2026" else "user"
+            
+            # 把角色传给数据库注册函数
+            success, msg = db.register(
+                username=new_user, 
+                phone=new_phone, 
+                student_id=new_sid, 
+                password=new_pw, 
+                role=role_to_assign
+            )
+            
             if success:
-                st.success("注册成功！请切换到登录页登录。")
+                if role_to_assign == "admin":
+                    st.success("🎉 管理员账号注册成功！请切换到登录页登录。")
+                else:
+                    st.success("注册成功！请切换到登录页登录。")
             else:
                 st.error(msg)
