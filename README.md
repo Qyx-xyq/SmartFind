@@ -12,7 +12,13 @@
 ##### ├──YOLO.py       YOLO模型
 ##### ├──train_yolo.py   YOLO 训练脚本（需要画框的 txt 标签）
 ##### ├── train_clip.py  CLIP 训练脚本（只需要 图片+文字描述）
-##### ├── main.py        最终流水线入口
+##### |
+##### ├──web
+##### | |- smartfind_app.py  搜索界面
+##### | |- auth_app.py       登录/注册界面
+##### | |- main_app.py       总入口，负责界面跳转
+##### |
+##### ├── main.py        最终流水线测试入口
 ##### ├──data/           存放两套不同的数据集
 ##### └──moedels         模型存储
 ##### |└──yolov8n.pt     yolov8官方预训练模型

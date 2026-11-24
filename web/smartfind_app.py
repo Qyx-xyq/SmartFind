@@ -596,7 +596,7 @@ def _debug_html(items: List[dict]) -> str:
 # 页面装配
 # ============================================================================
 def main() -> None:
-    st.set_page_config(page_title="慧眼寻物 SmartFind", page_icon="🔍", layout="centered")
+    # st.set_page_config(page_title="慧眼寻物 SmartFind", page_icon="🔍", layout="centered")
     st.markdown(CSS, unsafe_allow_html=True)
 
     ss = st.session_state
