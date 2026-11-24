@@ -1,66 +1,58 @@
 import os
-from PIL import Image
+import glob
 from YOLO import YOLODetector
 from CLIP import CLIPMatcher
 
-def run_pipeline(image_path, text_query):
-    print(f"\n=============================================")
-    print(f"📸 正在处理图片: {image_path}")
-    print(f"🔍 用户查询物品: '{text_query}'")
-    print(f"=============================================")
+def batch_process_folder(folder_path, text_query):
+    print(f"\n📂 正在批量处理文件夹: {folder_path}")
+    print(f"🔍 寻找目标: '{text_query}'")
 
-    # 1. 初始化模型（只会加载一次）
-    print("--- 初始化模型 ---")
+    # 1. 初始化模型
     yolo = YOLODetector(model_path="models/yolov8n.pt", conf_threshold=0.1)
     clip_matcher = CLIPMatcher(threshold=0.25)
 
-    # 2. YOLO 阶段：提取候选子图
-    print("\n--- 阶段 1: YOLO 提取候选区域 ---")
-    try:
-        crops = yolo.detect_and_crop(image_path)
-    except Exception as e:
-        print(f"❌ YOLO 处理失败: {e}")
+    # 2. 获取文件夹内所有图片
+    image_paths = []
+    for ext in ("*.jpg", "*.jpeg", "*.png"):
+        image_paths.extend(glob.glob(os.path.join(folder_path, ext)))
+    
+    if not image_paths:
+        print("❌ 文件夹里没有找到图片！")
         return
 
-    if not crops:
-        print("❌ 结束：YOLO 没有在图片里检测到任何物体。")
-        return
+    # 创建输出文件夹，用于保存你所有的裁剪图
+    save_dir = "data/outputs"
+    os.makedirs(save_dir, exist_ok=True)
 
-    # 3. CLIP 阶段：图文匹配
-    print("\n--- 阶段 2: CLIP 图文匹配 ---")
-    # 注意：调用队友写的 match_images 方法，传入文字和 YOLO 的切片列表
-    result_dict = clip_matcher.match_images(text_query, crops, top_k=3)
-
-    # 4. 解析结果（队友返回的是字典，我们按字典的键取值）
-    if result_dict["status"] == "error":
-        print(f"❌ CLIP 报错: {result_dict['message']}")
-        return
-
-    print(f"判定结论: {result_dict['message']}")
-    print(f"最高得分: {result_dict['best_score']}")
-
-    # 5. 如果有找到的目标，把得分最高的那张切片保存下来
-    if result_dict["is_found"]:
-        top_results = result_dict["top_k_results"]
-        if top_results:
-            # top_results 是一个列表，里面是 (PIL图片, 得分) 的元组
-            best_image = top_results[0][0] 
+    # 3. 遍历所有图片
+    for img_path in image_paths:
+        print(f"\n📸 处理图片: {os.path.basename(img_path)}")
+        
+        # YOLO 切图
+        crops = yolo.detect_and_crop(img_path)
+        if not crops:
+            print("  - YOLO 未检测到任何物体")
+            continue
             
-            # 保存这张图，方便你们写报告和展示
-            save_dir = "data/outputs"
-            os.makedirs(save_dir, exist_ok=True)
-            save_path = os.path.join(save_dir, "found_target.jpg")
-            best_image.save(save_path)
-            print(f"✨ 最匹配的切片已保存至: {save_path}")
-
-    print("=============================================\n")
-
+        print(f"  - YOLO 切出了 {len(crops)} 个小图，正在交给 CLIP 打分...")
+        
+        # CLIP 匹配（这里把 top_k 设大一点，比如 100，相当于返回所有结果）
+        res = clip_matcher.match_images(text_query, crops, top_k=100)
+        
+        if res["status"] == "error":
+            print(f"  - CLIP 报错: {res['message']}")
+            continue
+            
+        # 4. 保存所有切出来的小图，并在文件名上打上分数
+        top_results = res["top_k_results"]
+        for i, (crop_img, score) in enumerate(top_results):
+            # 把得分乘100取整放在文件名里，方便你直接按分数看
+            score_pct = int(score * 100)
+            save_name = f"{os.path.basename(img_path).split('.')[0]}_crop{i}_score_{score_pct}.jpg"
+            crop_img.save(os.path.join(save_dir, save_name))
+            
+        print(f"  ✅ 处理完毕，最高分: {res['best_score']:.3f}。所有切片已保存至 {save_dir}")
 
 if __name__ == "__main__":
-    # 找一张真实的图片测试（确保 data 文件夹下有这张图）
-    # 如果没有，你可以先去网上下载一张带背包的图，命名为 test.jpg 放进 data 文件夹
-    test_img = "data/2.jpg" 
-    test_query = "a black backpack"
-    
-    # 运行流水线
-    run_pipeline(test_img, test_query)
+    # 确保你把测试图放在 data 文件夹下
+    batch_process_folder("web/test_images", "red backpack")
