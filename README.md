@@ -8,14 +8,16 @@
 ##### | |- pipeline.py   简易YOLO-CLIP流水线示意
 ##### | |- data          输入/输出的示例图片
 ##### |
-##### ├──CLIP.py       CLIP模型
-##### ├──YOLO.py       YOLO模型
+##### ├──db_manager.py   数据库
+##### ├──CLIP.py         CLIP模型
+##### ├──YOLO.py         YOLO模型
 ##### ├──train_yolo.py   YOLO 训练脚本（需要画框的 txt 标签）
 ##### ├── train_clip.py  CLIP 训练脚本（只需要 图片+文字描述）
 ##### |
 ##### ├──web
 ##### | |- smartfind_app.py  搜索界面
 ##### | |- auth_app.py       登录/注册界面
+##### | |- item_register     物品登记界面
 ##### | |- main_app.py       总入口，负责界面跳转
 ##### |
 ##### ├── main.py        最终流水线测试入口

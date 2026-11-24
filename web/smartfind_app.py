@@ -68,8 +68,8 @@ IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".bmp", ".webp")
 
 # —— 现在：直接读项目里已有的照片做验证 ——
 LIBRARY_DIRS = [
-    ROOT / "data",                       # data/1.jpg 2.jpg 3.jpg bottle+laptop.jpg bus.jpg
-    # ROOT / "web" / "test_images",      # 想扩图库时把这一行放开即可
+    # ROOT / "test_images",                       # data/1.jpg 2.jpg 3.jpg bottle+laptop.jpg bus.jpg
+    ROOT / "web" / "test_images",      # 想扩图库时把这一行放开即可
 ]
 
 # —— 将来：管理员提交的图片统一落到这个目录（现在不存在也不影响运行）——
@@ -596,7 +596,7 @@ def _debug_html(items: List[dict]) -> str:
 # 页面装配
 # ============================================================================
 def main() -> None:
-    # st.set_page_config(page_title="慧眼寻物 SmartFind", page_icon="🔍", layout="centered")
+    st.set_page_config(page_title="慧眼寻物 SmartFind", page_icon="🔍", layout="centered")
     st.markdown(CSS, unsafe_allow_html=True)
 
     ss = st.session_state

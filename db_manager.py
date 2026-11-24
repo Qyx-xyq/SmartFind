@@ -7,18 +7,21 @@ import re
 
 class DBManager:
     def __init__(self, db_path="data/smartfind.db"):
+        # 确保 data 文件夹存在
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        
+        # 连接数据库
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.cursor = self.conn.cursor()
         self._create_tables()
 
     def _hash_password(self, password):
-        """密码哈希加密"""
+        """密码哈希加密（保护隐私）"""
         return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     def _create_tables(self):
         """初始化建表"""
-        # 1. 升级版用户表
+        # 1. 用户表
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,13 +33,16 @@ class DBManager:
             )
         ''')
         
-        # 2. 失物登记表 (保持不变)
+        # 2. 失物登记表
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS lost_items (
                 item_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER,
                 item_name TEXT NOT NULL,
                 description TEXT,
+                contact_info TEXT,
+                image_path TEXT,
+                status TEXT DEFAULT '未找回',
                 register_time TEXT NOT NULL,
                 FOREIGN KEY(user_id) REFERENCES users(user_id)
             )
@@ -93,35 +99,56 @@ class DBManager:
             return True, {
                 "user_id": user[0], 
                 "username": user[1], 
-                "role": user[2]  # 返回角色，用于校验是否为管理员
+                "role": user[2]
             }
         return False, "账号或密码错误"
 
     # ================== 物品业务 ==================
-    def add_lost_item(self, user_id, item_name, description):
-        """登记物品"""
+    def add_lost_item(self, user_id, item_name, description, contact_info="", image_file=None):
+        """登记物品（支持上传图片）"""
         if not item_name.strip():
             return False, "物品名称不能为空"
+        
+        # 保存用户上传的图片到本地 data/uploads
+        image_path = None
+        if image_file:
+            upload_dir = "data/uploads"
+            os.makedirs(upload_dir, exist_ok=True)
+            image_path = os.path.join(upload_dir, image_file.name)
+            with open(image_path, "wb") as f:
+                f.write(image_file.getbuffer())
+
         try:
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.cursor.execute(
-                "INSERT INTO lost_items (user_id, item_name, description, register_time) VALUES (?, ?, ?, ?)",
-                (user_id, item_name, description, now)
+                "INSERT INTO lost_items (user_id, item_name, description, contact_info, image_path, register_time) VALUES (?, ?, ?, ?, ?, ?)",
+                (user_id, item_name, description, contact_info, image_path, now)
             )
             self.conn.commit()
             return True, "物品登记成功"
         except Exception as e:
             return False, f"登记异常: {str(e)}"
-
+        
     def get_user_items(self, user_id):
-        """查询该用户登记过的所有物品"""
+        """查询该用户登记过的所有物品（返回：名称、描述、联系方式、图片路径、状态、时间）"""
         self.cursor.execute(
-            "SELECT item_name, description, register_time FROM lost_items WHERE user_id = ? ORDER BY register_time DESC",
+            """SELECT item_name, description, contact_info, image_path, status, register_time 
+               FROM lost_items WHERE user_id = ? ORDER BY register_time DESC""",
             (user_id,)
         )
         return self.cursor.fetchall()
 
+    def update_item_status(self, item_id, new_status):
+        """更新物品状态（如：未找回 -> 已找回）"""
+        try:
+            self.cursor.execute("UPDATE lost_items SET status = ? WHERE item_id = ?", (new_status, item_id))
+            self.conn.commit()
+            return True, "状态更新成功"
+        except Exception as e:
+            return False, f"更新失败: {str(e)}"
+
     def close(self):
         self.conn.close()
 
+# 全局单例，供网页直接 import 调用
 db = DBManager()
