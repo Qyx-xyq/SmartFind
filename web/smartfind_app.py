@@ -31,8 +31,8 @@ if str(ROOT) not in sys.path:
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".bmp", ".webp")
 
 LIBRARY_DIRS = [
-    ROOT / "data",
-    ROOT / "web" / "test_images",
+    # ROOT / "data",                       # data/1.jpg 2.jpg 3.jpg bottle+laptop.jpg bus.jpg
+    ROOT / "web" / "test_images",      # 想扩图库时把这一行放开即可
 ]
 ADMIN_UPLOAD_DIR = ROOT / "web" / "admin_uploads"
 
@@ -322,7 +322,7 @@ def _grid_html(items: List[dict], slots: int = GRID_SLOTS, show_full: bool = Fal
 # 页面装配
 # ============================================================================
 def main() -> None:
-    # ⚠️ 注意：这里去掉了 st.set_page_config，完全交给总控文件管理
+    # st.set_page_config(page_title="慧眼寻物 SmartFind", page_icon="🔍", layout="centered")
     st.markdown(CSS, unsafe_allow_html=True)
 
     ss = st.session_state

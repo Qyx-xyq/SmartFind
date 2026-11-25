@@ -184,7 +184,7 @@ class CLIPMatcher:
 
                 # 计算相似度
                 similarity_scores = (100.0 * text_features @ image_features.T).squeeze(0)
-                scores = similarity_scores.cpu().numpy().tolist()
+                scores = (similarity_scores / 100.0).cpu().numpy().tolist()
 
             # 排序与聚合
             results = list(zip(candidate_images, scores))
