@@ -2,6 +2,7 @@
 import sqlite3
 import hashlib
 import os
+import uuid  # ★ 新增：用来生成唯一文件名，防止同名覆盖
 from datetime import datetime
 import re
 
@@ -114,7 +115,12 @@ class DBManager:
         if image_file:
             upload_dir = "data/uploads"
             os.makedirs(upload_dir, exist_ok=True)
-            image_path = os.path.join(upload_dir, image_file.name)
+            
+            # ★ 修改：使用 UUID 防止同名文件覆盖
+            ext = os.path.splitext(image_file.name)[1] # 获取文件后缀名 (如 .jpg)
+            unique_name = f"{uuid.uuid4().hex}{ext}"   # 生成唯一文件名
+            image_path = os.path.join(upload_dir, unique_name)
+            
             with open(image_path, "wb") as f:
                 f.write(image_file.getbuffer())
 
@@ -130,9 +136,10 @@ class DBManager:
             return False, f"登记异常: {str(e)}"
         
     def get_user_items(self, user_id):
-        """查询该用户登记过的所有物品（返回：名称、描述、联系方式、图片路径、状态、时间）"""
+        """查询该用户登记过的所有物品（返回：ID、名称、描述、联系方式、图片路径、状态、时间）"""
+        # ★ 修改：查询中增加了 item_id，以便网页端能定位到具体记录进行状态更新
         self.cursor.execute(
-            """SELECT item_name, description, contact_info, image_path, status, register_time 
+            """SELECT item_id, item_name, description, contact_info, image_path, status, register_time 
                FROM lost_items WHERE user_id = ? ORDER BY register_time DESC""",
             (user_id,)
         )
@@ -146,6 +153,17 @@ class DBManager:
             return True, "状态更新成功"
         except Exception as e:
             return False, f"更新失败: {str(e)}"
+
+    # ★ 新增：管理员专属查询功能
+    def get_all_items(self):
+        """获取全系统所有人的登记记录，并关联用户名（供管理员使用）"""
+        self.cursor.execute('''
+            SELECT l.item_id, u.username, l.item_name, l.description, l.contact_info, l.image_path, l.status, l.register_time 
+            FROM lost_items l
+            JOIN users u ON l.user_id = u.user_id
+            ORDER BY l.register_time DESC
+        ''')
+        return self.cursor.fetchall()
 
     def close(self):
         self.conn.close()

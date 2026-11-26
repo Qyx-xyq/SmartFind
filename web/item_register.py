@@ -67,7 +67,7 @@ def show_register_page():
     else:
         # 用表格展示
         import pandas as pd
-        df = pd.DataFrame(my_items, columns=["物品名称", "描述", "联系方式", "图片路径", "状态", "登记时间"])
+        df = pd.DataFrame(my_items, columns=["记录ID","物品名称", "描述", "联系方式", "图片路径", "状态", "登记时间"])
         st.dataframe(df, use_container_width=True, hide_index=True)
 
 # 如果单独测试这个文件
